@@ -1,8 +1,7 @@
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "GLFW/glfw3.h"
 #include <stdio.h>
+#include "pch.h"
+#include "Defines.h"
+#include "PianoWindow/PianoWindow.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -12,11 +11,14 @@ static void glfw_error_callback(int error, const char* description)
 // Main code
 int main(int, char**)
 {
+    FILE* stdoutNew;
+    freopen_s(&stdoutNew, "log.txt", "w", stdout);
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
 
-    
     // GL 3.2 + GLSL 150
     const char* glsl_version = "#version 150";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -41,24 +43,25 @@ int main(int, char**)
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
-
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+    style.WindowRounding = 8.0f;
+    style.FrameRounding = 4.0f;
+    style.GrabRounding = 4.0f;
     style.ScaleAllSizes(main_scale);
     style.FontScaleDpi = main_scale;
-
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
-
     // Load Fonts
     io.Fonts->AddFontDefault();
-
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
+    bool show_piano = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -74,6 +77,11 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        if (show_piano)
+        {
+            WND_PIANO.draw();
+        }
+
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
@@ -87,6 +95,7 @@ int main(int, char**)
 
             ImGui::Text("This is some useful text.");
             ImGui::Checkbox("Demo Window", &show_demo_window);
+            ImGui::Checkbox("Demo Piano Window", &show_piano);
             ImGui::Checkbox("Another Window", &show_another_window);
 
             ImGui::SliderFloat("float", &f, 0.0f, 1.0f);

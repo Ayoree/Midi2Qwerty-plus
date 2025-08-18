@@ -8,8 +8,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Debug")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
 
+# Set Release-specific compile options
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+
 # Add GLFW as submodule
 add_subdirectory(submodules/glfw)
+
+# TODO: Add TBB
+# ...
+
 # Disable GLFW uneccecary options 
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -20,6 +27,7 @@ add_compile_options(
     -Wall
     -Werror
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    -ltbb
 )
 
 # Add ImGui as a library
@@ -34,8 +42,13 @@ add_library(imgui
     submodules/imgui/imgui_demo.cpp # TODO: Remove later
 )
 
-# Define the executable FIRST
-add_executable(Midi2Qwerty_plus src/main.cpp)
+# Define the executable
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
+add_executable(Midi2Qwerty_plus ${SOURCES})
+
+target_include_directories(Midi2Qwerty_plus PRIVATE
+    src
+)
 
 # Add include libraries
 target_include_directories(imgui PUBLIC
