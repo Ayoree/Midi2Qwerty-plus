@@ -47,11 +47,10 @@ public:
         localtime_s(&imBuf, &inTime);
         _V2::system_clock::duration since_epoch = timestamp.time_since_epoch();
         milliseconds ms = duration_cast<milliseconds>(since_epoch) % 1000;
-    
+
         std::ostringstream timeSS;
         timeSS << std::put_time(&imBuf, "%H:%M:%S");
 
-        // Форматируем через std::format
         return std::format("{}.{:03d}", timeSS.str(), ms.count());
     }
 

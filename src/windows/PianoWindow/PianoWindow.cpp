@@ -1,5 +1,5 @@
 #include "PianoWindow.h"
-#include "../LogWindow/LogWindow.h"
+#include "common/Logger.h"
 PianoWindow::PianoWindow()
 {
     LOG_DEBUG("PianoWindow init");

@@ -1,5 +1,4 @@
 #pragma once
-#include <array>
 #include "pch.h"
 #include "common/Drawable.h"
 #include "PianoKey.h"

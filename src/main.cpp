@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Defines.h"
+#include "common/Logger.h"
+#include "windows/SettingsWindow/SettingsWindow.h"
 #include "windows/PianoWindow/PianoWindow.h"
 #include "windows/LogWindow/LogWindow.h"
 
@@ -11,7 +13,7 @@ static void glfw_error_callback(int error, const char* description)
 // Main code
 int main(int, char**)
 {
-    LogWindow::instance(); // Init log
+    Logger::instance(); // Init logger
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -75,6 +77,7 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         
+        SettingsWindow::instance().draw();
         if (show_log)
             LogWindow::instance().draw();
         if (show_piano)
