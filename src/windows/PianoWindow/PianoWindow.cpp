@@ -1,8 +1,8 @@
 #include "PianoWindow.h"
-#include <thread>
-
+#include "../LogWindow/LogWindow.h"
 PianoWindow::PianoWindow()
 {
+    LOG_DEBUG("PianoWindow init");
     uint8_t iWhite = 0;
     uint8_t iBlack = 0;
     for (uint8_t i = 0; i < KEYS_ALL; ++i)
@@ -25,14 +25,14 @@ void PianoWindow::setKeysPos()
         if (key->isBlack())
         {
             key->setPos({
-                    whiteIndex * PianoKey::s_whiteSize.x - PianoKey::s_blackSize.x / 2.f,
+                    whiteIndex * PianoKey::s_whiteSize.x - PianoKey::s_blackSize.x / 2.f + 1.f,
                     0
                 });
         }
         else
         {
             key->setPos({
-                    whiteIndex * PianoKey::s_whiteSize.x,
+                    whiteIndex * PianoKey::s_whiteSize.x + 1.f,
                     0
                 });
             ++whiteIndex;
@@ -42,7 +42,7 @@ void PianoWindow::setKeysPos()
 
 void PianoWindow::draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(PianoKey::s_whiteSize.x * KEYS_WHITE, PianoKey::s_whiteSize.y + ImGui::GetFrameHeight()), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(PianoKey::s_whiteSize.x * KEYS_WHITE + 2.f, PianoKey::s_whiteSize.y + ImGui::GetFrameHeight() + 1.f), ImGuiCond_Always);
     ImGui::Begin("Keyboard", NULL, s_windowFlags);
 
     for (const auto& key : m_keysWhite)

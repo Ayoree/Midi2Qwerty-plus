@@ -1,19 +1,17 @@
-#include <stdio.h>
 #include "pch.h"
 #include "Defines.h"
-#include "PianoWindow/PianoWindow.h"
+#include "windows/PianoWindow/PianoWindow.h"
+#include "windows/LogWindow/LogWindow.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
-    fprintf(stderr, "GLFW Error %d: %s\n", error, description);
+    LOG_ERROR(std::format("GLFW Error {}: {}", error, description));
 }
 
 // Main code
 int main(int, char**)
 {
-    FILE* stdoutNew;
-    freopen_s(&stdoutNew, "log.txt", "w", stdout);
-    setvbuf(stdout, NULL, _IONBF, 0);
+    LogWindow::instance(); // Init log
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -60,8 +58,8 @@ int main(int, char**)
     bool show_demo_window = true;
     bool show_another_window = false;
     bool show_piano = true;
+    bool show_log = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
 
     while (!glfwWindowShouldClose(window))
     {
@@ -76,11 +74,11 @@ int main(int, char**)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
+        
+        if (show_log)
+            LogWindow::instance().draw();
         if (show_piano)
-        {
-            WND_PIANO.draw();
-        }
+            PianoWindow::instance().draw();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
@@ -102,7 +100,13 @@ int main(int, char**)
             ImGui::ColorEdit3("clear color", (float*)&clear_color);
 
             if (ImGui::Button("Button"))
-                counter++;
+                LOG_INFO("TEST info");
+            if (ImGui::Button("Button2"))
+                LOG_WARN("some warning");
+            if (ImGui::Button("Button3"))
+                LOG_ERROR("someError");
+            if (ImGui::Button("Button4"))
+                LOG_DEBUG("Degugnfd");
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
 

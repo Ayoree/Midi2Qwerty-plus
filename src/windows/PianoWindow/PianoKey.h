@@ -21,9 +21,9 @@ private:
     ImVec2 m_pos = {0, 0};
 
 public:
-    constexpr static ImVec2 s_whiteSize = {8.f, 60.f};
-    constexpr static ImVec2 s_blackSize = {6.f, 35.f};
-    static bool isBlackKey(uint8_t index)
+    constexpr static ImVec2 s_whiteSize = {18.f, 120.f};
+    constexpr static ImVec2 s_blackSize = {10.f, 85.f};
+    inline static bool isBlackKey(uint8_t index)
     {
         const static std::unordered_set<uint8_t> blackKeysId = {1, 4, 6, 9, 11};
         return blackKeysId.contains(index % 12);

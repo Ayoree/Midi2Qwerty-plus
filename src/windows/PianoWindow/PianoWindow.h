@@ -1,10 +1,8 @@
 #pragma once
+#include <array>
 #include "pch.h"
 #include "common/Drawable.h"
 #include "PianoKey.h"
-#include <array>
-
-#define WND_PIANO PianoWindow::instance()
 
 class PianoWindow : private Drawable
 {
@@ -23,7 +21,7 @@ private:
     void setKeysPos();
 
 private:
-    constexpr static int s_windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoCollapse;
+    constexpr static int s_windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground;
     constexpr static uint8_t KEYS_WHITE = 52;
     constexpr static uint8_t KEYS_BLACK = 36;
     constexpr static uint8_t KEYS_ALL = KEYS_WHITE + KEYS_BLACK;
