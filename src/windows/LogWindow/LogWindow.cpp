@@ -1,19 +1,5 @@
 #include "LogWindow.h"
-
-LogWindow::LogWindow()
-{
-    m_logfile.open("log.txt", std::ios::out | std::ios::trunc);
-    if (!m_logfile.is_open()) {
-        LOG_ERROR("Failed to open `log.txt`");
-    }
-}
-
-LogWindow::~LogWindow()
-{
-    if (m_logfile.is_open()) {
-        m_logfile.close();
-    }
-}
+#include "common/Logger.h"
 
 void LogWindow::draw()
 {
@@ -23,8 +9,8 @@ void LogWindow::draw()
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
     ImGuiListClipper clipper;
-    clipper.Begin(m_buf.size());
-    for (const auto& entry : m_buf)
+    clipper.Begin(Logger::instance().getBuffer().size());
+    for (const auto& entry : Logger::instance().getBuffer())
     {
         ImGui::TextColored(COLOR_GRAY, std::format("[{}]", entry.get_time()).c_str());
         ImGui::SameLine();

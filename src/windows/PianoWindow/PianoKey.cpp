@@ -1,7 +1,7 @@
 #include "PianoKey.h"
 #include "pch.h"
 #include "Defines.h"
-#include "../LogWindow/LogWindow.h"
+#include "common/Logger.h"
 
 PianoKey::PianoKey(uint8_t keyId) :
     m_id(keyId),
@@ -10,8 +10,7 @@ PianoKey::PianoKey(uint8_t keyId) :
     LOG_DEBUG(std::format("Created `PianoKey`, id: {}, isBlack: {}", m_id, m_isBlack));
 }
 
-PianoKey::~PianoKey()
-{}
+PianoKey::~PianoKey() {}
     
 void PianoKey::draw()
 {
