@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "Defines.h"
 #include "common/Logger.h"
+#include "windows/CustomTitleBar/CustomTitleBar.h"
 #include "windows/SettingsWindow/SettingsWindow.h"
 #include "windows/PianoWindow/PianoWindow.h"
 #include "windows/LogWindow/LogWindow.h"
+
+constexpr Vec2<uint16_t> WINDOW_SIZE = {PianoWindow::s_windowSize.x, 604};
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -25,14 +28,33 @@ int main(int, char**)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
     // Create window with graphics context
     float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
-    GLFWwindow* window = glfwCreateWindow((int)(1280 * main_scale), (int)(800 * main_scale), "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow((int)(WINDOW_SIZE.x * main_scale) + 2, (int)(WINDOW_SIZE.y * main_scale), "MIDI 2 QWERTY plus", nullptr, nullptr);
     if (window == nullptr)
+    {
+        LOG_ERROR("Unable to initialize window!");
         return 1;
+    }
+
+    // Centralize window
+    {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        int monitorX, monitorY, monitorWidth, monitorHeight;
+        glfwGetMonitorWorkarea(monitor, &monitorX, &monitorY, &monitorWidth, &monitorHeight);
+        const int x = monitorX + (monitorWidth - WINDOW_SIZE.x) * 0.5f;
+        const int y = monitorY + (monitorHeight - WINDOW_SIZE.y) * 0.5f;
+        glfwSetWindowPos(window, x, y);
+    }
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
+    glfwSetWindowAttrib(window, GLFW_RESIZABLE, GLFW_FALSE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -40,6 +62,11 @@ int main(int, char**)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io.IniFilename = NULL; // Manually setting layout
+    ImGui::LoadIniSettingsFromDisk("main_layout.ini");
+
+    // Init custom title bar
+    CustomTitleBar::instance().init(window);
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -56,86 +83,32 @@ int main(int, char**)
     ImGui_ImplOpenGL3_Init(glsl_version);
     // Load Fonts
     io.Fonts->AddFontDefault();
-    // Our state
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    bool show_piano = true;
-    bool show_log = true;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 bgColor = COLOR_TRANSPARENT;
 
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-        if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
-        {
-            ImGui_ImplGlfw_Sleep(10);
-            continue;
-        }
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        
+
+        // Draw custom windows
+        CustomTitleBar::instance().draw();
+        LogWindow::instance().draw();
         SettingsWindow::instance().draw();
-        if (show_log)
-            LogWindow::instance().draw();
-        if (show_piano)
-            PianoWindow::instance().draw();
+        PianoWindow::instance().draw();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        {
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");
-
-            ImGui::Text("This is some useful text.");
-            ImGui::Checkbox("Demo Window", &show_demo_window);
-            ImGui::Checkbox("Demo Piano Window", &show_piano);
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-            ImGui::ColorEdit3("clear color", (float*)&clear_color);
-
-            if (ImGui::Button("Button"))
-                LOG_INFO("TEST info");
-            if (ImGui::Button("Button2"))
-                LOG_WARN("some warning");
-            if (ImGui::Button("Button3"))
-                LOG_ERROR("someError");
-            if (ImGui::Button("Button4"))
-                LOG_DEBUG("Degugnfd");
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
-
+        //ImGui::ShowDemoWindow(&show_demo_window);
         // Rendering
         ImGui::Render();
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        glClearColor(bgColor.x, bgColor.y, bgColor.z, bgColor.w);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         glfwSwapBuffers(window);
     }
 

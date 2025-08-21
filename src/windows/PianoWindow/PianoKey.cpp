@@ -23,7 +23,7 @@ void PianoKey::draw()
     draw_list->AddRectFilled(
         targetPos,
         ImVec2(targetPos.x + size.x, targetPos.y + size.y),
-        m_isBlack ? COLOR_BLACK : COLOR_WHITE, m_isBlack ? s_blackSize.x / 4.f : s_whiteSize.x / 7.5f, ImDrawFlags_RoundCornersBottom
+        m_isBlack ? COLOR_BLACK : COLOR_WHITE, m_isBlack ? s_blackSize.x / 5.f : s_whiteSize.x / 7.5f, ImDrawFlags_RoundCornersBottom
     );
     if (!m_isBlack)
     {

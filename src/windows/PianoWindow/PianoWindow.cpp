@@ -25,7 +25,7 @@ void PianoWindow::setKeysPos()
         if (key->isBlack())
         {
             key->setPos({
-                    whiteIndex * PianoKey::s_whiteSize.x - PianoKey::s_blackSize.x / 2.f + 1.f,
+                    whiteIndex * PianoKey::s_whiteSize.x - PianoKey::s_blackSize.x * 0.5f + 1.f,
                     0
                 });
         }
@@ -42,8 +42,8 @@ void PianoWindow::setKeysPos()
 
 void PianoWindow::draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(PianoKey::s_whiteSize.x * KEYS_WHITE + 2.f, PianoKey::s_whiteSize.y + ImGui::GetFrameHeight() + 1.f), ImGuiCond_Always);
-    ImGui::Begin("Keyboard", NULL, s_windowFlags);
+    ImGui::SetNextWindowSize(ImVec2(s_windowSize.x + 2, s_windowSize.y + ImGui::GetFrameHeight()), ImGuiCond_Always);
+    ImGui::Begin("Keyboard", nullptr, s_windowFlags);
 
     for (const auto& key : m_keysWhite)
         key->draw();

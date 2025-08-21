@@ -1,5 +1,6 @@
 #pragma once
 #include <format>
+#include <cmath>
 #include <unordered_set>
 #include <algorithm>
 #include <execution>
