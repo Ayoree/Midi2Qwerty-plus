@@ -47,7 +47,7 @@ add_library(imgui
 
 # Define the executable
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
-add_executable(Midi2Qwerty_plus ${SOURCES})
+add_executable(Midi2Qwerty_plus WIN32 ${SOURCES})
 
 # Add include directories for project
 target_include_directories(Midi2Qwerty_plus PRIVATE

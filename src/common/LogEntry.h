@@ -12,7 +12,7 @@ public:
         WARNING,
         DEBUG,
     };
-    static const std::string& to_string(Type type) {
+    static const std::string_view to_string(Type type) {
         return s_typeToString[static_cast<int>(type)];
     }
     static const ImColor to_color(Type type) {
@@ -28,7 +28,7 @@ public:
         }
     }
 private:
-    constexpr static std::array<std::string, 4> s_typeToString = {"INFO", "ERROR", "WARNING", "DEBUG"};
+    constexpr static std::array<const std::string_view, 4> s_typeToString = {"INFO", "ERROR", "WARNING", "DEBUG"};
 
 public:
     template <typename T>
@@ -39,7 +39,7 @@ public:
         timestamp(std::chrono::system_clock::now()) 
     {}
     
-    std::string get_time() const {
+    const std::string get_timeStr() const {
         using namespace std::chrono;
 
         time_t inTime = system_clock::to_time_t(timestamp);
@@ -55,7 +55,7 @@ public:
     }
 
     std::string to_string() const {
-        return "[" + get_time() + "][" + to_string(type) + "]\t" + msg;
+        return std::format("[{}][{}]\t{}", get_timeStr(), to_string(type), msg);
     }
     
     const Type type;

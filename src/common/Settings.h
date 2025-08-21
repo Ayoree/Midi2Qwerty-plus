@@ -3,10 +3,10 @@
 
 struct Settings
 {
-public:
     // Singleton
-    Settings() {};
-    ~Settings() {};
+    Settings() = default;
+    ~Settings() = default;
+public:
     Settings(const Settings&) = delete;
     Settings& operator=(const Settings&) = delete;
     Settings(Settings&&) = delete;

@@ -5,10 +5,10 @@
 
 class CustomTitleBar : private Drawable
 {
-public:
-    // Singleton
     CustomTitleBar() = default;
     ~CustomTitleBar() = default;
+public:
+    // Singleton
     CustomTitleBar(const CustomTitleBar&) = delete;
     CustomTitleBar& operator=(const CustomTitleBar&) = delete;
     CustomTitleBar(CustomTitleBar&&) = delete;

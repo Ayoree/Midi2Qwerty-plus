@@ -1,5 +1,7 @@
 #pragma once
 
+#include "pch.h"
+
 #define COLOR_TRANSPARENT ImColor(0, 0, 0, 0)
 #define COLOR_WHITE ImColor(1.f, 1.f, 1.f, 1.f)
 #define COLOR_BLACK ImColor(0.f, 0.f, 0.f, 1.f)
@@ -12,12 +14,34 @@
 #define MOUSE_MIDDLE 2
 
 constexpr std::string_view APP_NAME = "MIDI 2 QWERTY plus";
+constexpr std::string_view LOG_FILE_PATH = "log.txt";
 
 static inline ImVec2 operator+(const ImVec2& a, const ImVec2& b) {
     return ImVec2(a.x + b.x, a.y + b.y);
 }
 static inline ImVec2 operator-(const ImVec2& a, const ImVec2& b) {
     return ImVec2(a.x - b.x, a.y - b.y);
+}
+
+namespace std 
+{
+    template <typename T>
+    using uptr = unique_ptr<T>;
+    template <typename T>
+    using sptr = shared_ptr<T>;
+    template <typename T>
+    using wptr = weak_ptr<T>;
+};
+namespace make
+{
+    template <typename T, typename... Args>
+    std::unique_ptr<T> uptr(Args&&... args) {
+        return std::make_unique<T>(std::forward<Args>(args)...);
+    }
+    template <typename T, typename... Args>
+    std::unique_ptr<T> sptr(Args&&... args) {
+        return std::make_shared<T>(std::forward<Args>(args)...);
+    }
 }
 
 template<typename T> 
@@ -79,6 +103,6 @@ struct Vec2
     }
 };
 
-typedef Vec2<float> Vec2f;
-typedef Vec2<double> Vec2d;
-typedef Vec2<int> Vec2i;
+using Vec2f = Vec2<float>;
+using Vec2d = Vec2<double>;
+using Vec2i = Vec2<int>;

@@ -1,5 +1,4 @@
 #pragma once
-#include <fstream>
 #include "pch.h"
 #include "LogEntry.h"
 
@@ -15,21 +14,10 @@
 
 class Logger
 {
-public:
     // Singleton
-    Logger()
-    {
-        m_logfile.open("log.txt", std::ios::out | std::ios::trunc);
-        if (!m_logfile.is_open()) {
-            LOG_ERROR("Failed to open `log.txt`");
-        }
-    }
-    ~Logger()
-    {
-        if (m_logfile.is_open()) {
-            m_logfile.close();
-        }
-    }
+    Logger() = default;
+    ~Logger() = default;
+public:
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
     Logger(Logger&&) = delete;
@@ -49,8 +37,7 @@ public:
         LogEntry entry(type, std::forward<T>(message));
         {
             std::lock_guard<std::mutex> lock(m_mutex);
-            if (m_logfile.is_open())
-                m_logfile << entry.to_string() << std::endl;
+            std::cout << entry.to_string() << std::endl;
             m_buf.emplace_back(std::move(entry));
             if (m_buf.size() > s_maxLogSize)
                 m_buf.pop_front();
@@ -59,7 +46,6 @@ public:
 
 private:
     std::deque<LogEntry> m_buf;
-    std::ofstream m_logfile;
     std::mutex m_mutex;
 
 private:

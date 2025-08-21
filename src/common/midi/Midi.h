@@ -4,15 +4,16 @@
 #include <map>
 #include "portmidi.h"
 #include "porttime.h"
+#include "Defines.h"
+#include "AsyncMidiPoll.h"
 
-typedef std::function<void(PmTimestamp, uint8_t, PmMessage, PmMessage)> MidiCallback;
 typedef std::map<size_t, const PmDeviceInfo*> PmDeviceMap;
 
 class Midi {
-public:
     // Singleton
     Midi();
     ~Midi();
+public:
     Midi(const Midi&) = delete;
     Midi& operator=(const Midi&) = delete;
     Midi(Midi&&) = delete;
@@ -33,12 +34,12 @@ public:
     void setOutput(bool isEnabled = true);
 
 private:
-    PmDeviceMap m_devices;
-    PmDeviceID m_selectedInputID;
-    PmDeviceID m_selectedOutputID;
-    PortMidiStream* m_inputStream = nullptr;
-    PortMidiStream* m_outputStream = nullptr;
+    bool handlePossibleError(const PmError err) const;
 
 private:
-    constexpr static uint32_t BUF_SIZE = 2048;
+    PmDeviceMap m_devices;
+    MidiStream m_inputStream;
+    MidiStream m_outputStream;
+    std::uptr<AsyncMidiPoll> m_inputPoll;
+    std::uptr<AsyncMidiPoll> m_outputPoll;
 };
