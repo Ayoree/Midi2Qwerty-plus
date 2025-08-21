@@ -8,7 +8,7 @@ SettingsWindow::SettingsWindow()
 
 void SettingsWindow::draw()
 {
-    ImGui::Begin("Settings");
+    ImGui::Begin("Settings", nullptr, s_windowFlags);
 
     ImGui::Checkbox("Enable output", &Settings::instance().enableOutput);
     ImGui::Checkbox("Enable sustain", &Settings::instance().enableSustain);

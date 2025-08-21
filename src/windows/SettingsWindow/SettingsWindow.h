@@ -14,4 +14,7 @@ public:
         return instance;
     };
     void draw() override;
+
+private:
+    constexpr static int s_windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 };
