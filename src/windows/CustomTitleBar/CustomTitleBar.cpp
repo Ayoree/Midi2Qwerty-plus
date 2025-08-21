@@ -4,12 +4,12 @@ void CustomTitleBar::init(GLFWwindow* window)
 {
     IM_ASSERT(window != nullptr);
     m_window = window;
-    LOG_DEBUG("CustomTitleBar init");
+    LOG_DEBUG("CustomTitleBar inited");
 }
 
 void CustomTitleBar::draw()
 {
-    ImGui::Begin("TitleBar", nullptr, s_windowFlags);
+    ImGui::Begin("TitleBar", nullptr, WINDOW_FLAGS);
     ImGui::SetWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, s_windowHeight));
     ImGui::SetWindowPos(ImVec2(0, 0));
 
@@ -62,7 +62,7 @@ void CustomTitleBar::handleDrag()
     if (isDragging) {
         Vec2f curPos = Vec2f(io.MousePos);
         Vec2f delta = curPos - startMousePos;
-        if (isMarginReached || abs(delta.x) > s_toDragMargin || abs(delta.y) > s_toDragMargin)
+        if (isMarginReached || abs(delta.x) > DRAG_MARGIN || abs(delta.y) > DRAG_MARGIN)
         {
             isMarginReached = true;
             newWndPos += Vec2i(floorf(delta.x), floorf(delta.y));;

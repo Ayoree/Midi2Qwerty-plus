@@ -1,15 +1,8 @@
 #include "LogWindow.h"
-#include "common/Logger.h"
-
-LogWindow::LogWindow()
-{
-    LOG_DEBUG("LogWindow init");
-}
-
 
 void LogWindow::draw()
 {
-    ImGui::Begin("Log", nullptr, s_windowFlags);
+    ImGui::Begin("Log", nullptr, WINDOW_FLAGS);
     ImGui::BeginChild("Scroll", ImVec2(0,0), ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));

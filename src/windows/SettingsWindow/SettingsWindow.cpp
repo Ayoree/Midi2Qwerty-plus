@@ -3,12 +3,12 @@
 
 SettingsWindow::SettingsWindow()
 {
-    LOG_DEBUG("SettingsWindow init");
+    LOG_DEBUG("SettingsWindow inited");
 }
 
 void SettingsWindow::draw()
 {
-    ImGui::Begin("Settings", nullptr, s_windowFlags);
+    ImGui::Begin("Settings", nullptr, WINDOW_FLAGS);
 
     ImGui::Checkbox("Enable output", &Settings::instance().enableOutput);
     ImGui::Checkbox("Enable sustain", &Settings::instance().enableSustain);
