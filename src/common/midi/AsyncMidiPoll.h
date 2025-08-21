@@ -1,0 +1,39 @@
+#pragma once
+
+#include <thread>
+#include <condition_variable>
+#include <stop_token>
+#include "portmidi.h"
+#include "porttime.h"
+#include "pch.h"
+#include "common/Logger.h"
+
+using MidiStreamCallback = std::function<void(PmTimestamp, uint8_t, PmMessage, PmMessage)>;
+
+struct MidiStream {
+    constexpr static uint16_t BUF_SIZE = 2048;
+    PmDeviceID deviceID;
+    PortMidiStream* stream;
+    PmEvent buffer[BUF_SIZE];
+};
+
+class AsyncMidiPoll
+{
+private:
+    constexpr static std::chrono::nanoseconds SLEEP_TIME = std::chrono::milliseconds(1);
+    constexpr static std::chrono::nanoseconds LONG_SLEEP_TIME = std::chrono::milliseconds(100);
+    constexpr static std::chrono::nanoseconds LONG_SLEEP_TIME_MARGIN = std::chrono::seconds(30);
+
+public:
+    AsyncMidiPoll(MidiStream& stream);
+    ~AsyncMidiPoll();
+
+private:
+    void startPoll(std::stop_token stoken);
+    void readStreamData();
+
+private:
+    MidiStream& m_stream;
+    std::jthread m_workerThread;
+    std::chrono::steady_clock::time_point m_lastEventTime;
+};

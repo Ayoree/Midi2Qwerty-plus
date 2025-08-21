@@ -5,10 +5,10 @@
 
 class SettingsWindow : private Drawable
 {
-public:
     // Singleton
     SettingsWindow();
     ~SettingsWindow() = default;
+public:
     SettingsWindow(const SettingsWindow&) = delete;
     SettingsWindow& operator=(const SettingsWindow&) = delete;
     SettingsWindow(SettingsWindow&&) = delete;

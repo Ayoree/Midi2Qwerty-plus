@@ -15,10 +15,14 @@ public:
     float getWidth() const { return m_isBlack ? BLACK_KEY_SIZE.x : WHITE_KEY_SIZE.x; }
     void setPos(ImVec2 pos) { m_pos = pos; }
 
+    void press() { m_isPressed = true; }
+    void release() { m_isPressed = false; }
+
 private:
     const uint8_t m_id = 0;
     const bool m_isBlack = false;
     ImVec2 m_pos = {0, 0};
+    bool m_isPressed = false;
 
 public:
     constexpr static ImVec2 WHITE_KEY_SIZE = {18.f, 120.f};

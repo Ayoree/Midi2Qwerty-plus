@@ -6,10 +6,10 @@
 
 class LogWindow : private Drawable
 {
-public:
     // Singleton
     LogWindow() { LOG_DEBUG("LogWindow inited"); };
     ~LogWindow() = default;
+public:
     LogWindow(const LogWindow&) = delete;
     LogWindow& operator=(const LogWindow&) = delete;
     LogWindow(LogWindow&&) = delete;
