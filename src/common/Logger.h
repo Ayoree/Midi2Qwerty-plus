@@ -16,6 +16,7 @@
 class Logger
 {
 public:
+    // Singleton
     Logger()
     {
         m_logfile.open("log.txt", std::ios::out | std::ios::trunc);
@@ -29,8 +30,11 @@ public:
             m_logfile.close();
         }
     }
-
-    static Logger& instance() // Singleton
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
+    Logger(Logger&&) = delete;
+    Logger& operator=(Logger&&) = delete;
+    static Logger& instance()
     {
         static Logger instance = Logger();
         return instance;

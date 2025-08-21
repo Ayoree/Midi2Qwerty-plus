@@ -4,3 +4,6 @@
 [submodule "submodules/glfw"]
 	path = submodules/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "submodules/portmidi"]
+	path = submodules/portmidi
+	url = https://github.com/PortMidi/portmidi.git

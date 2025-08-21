@@ -14,6 +14,9 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 # Add GLFW as submodule
 add_subdirectory(submodules/glfw)
 
+# Add PortMidi as submodule
+add_subdirectory(submodules/portmidi)
+
 # TODO: Add TBB
 # ...
 
@@ -27,7 +30,7 @@ add_compile_options(
     -Wall
     -Werror
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
-    -ltbb
+    -ltbb # Do we need this??
 )
 
 # Add ImGui as a library
@@ -46,11 +49,15 @@ add_library(imgui
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 add_executable(Midi2Qwerty_plus ${SOURCES})
 
+# Add include directories for project
 target_include_directories(Midi2Qwerty_plus PRIVATE
     src
+    submodules/portmidi
+    submodules/portmidi/pm_common
+    submodules/portmidi/porttime
 )
 
-# Add include libraries
+# Add include directories for imgui
 target_include_directories(imgui PUBLIC
     submodules/imgui
     submodules/imgui/backends
@@ -63,6 +70,7 @@ target_link_libraries(Midi2Qwerty_plus PRIVATE
     imgui
     glfw
     OpenGL::GL
+    portmidi
 )
 
 # Add compile definitions

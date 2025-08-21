@@ -1,6 +1,5 @@
 #pragma once
 
-
 #define COLOR_TRANSPARENT ImColor(0, 0, 0, 0)
 #define COLOR_WHITE ImColor(1.f, 1.f, 1.f, 1.f)
 #define COLOR_BLACK ImColor(0.f, 0.f, 0.f, 1.f)

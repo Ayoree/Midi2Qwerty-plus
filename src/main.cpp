@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "Defines.h"
 #include "common/Logger.h"
+#include "common/midi/Midi.h"
 #include "windows/CustomTitleBar/CustomTitleBar.h"
 #include "windows/SettingsWindow/SettingsWindow.h"
 #include "windows/PianoWindow/PianoWindow.h"
 #include "windows/LogWindow/LogWindow.h"
 
-constexpr Vec2<uint16_t> WINDOW_SIZE = {PianoWindow::s_windowSize.x, 604};
+constexpr Vec2<uint16_t> WINDOW_SIZE = {PianoWindow::WINDOW_SIZE.x, 604};
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -17,7 +18,8 @@ static void glfw_error_callback(int error, const char* description)
 int main(int, char**)
 {
     Logger::instance(); // Init logger
-
+    Midi::instance(); // Init PortMidi
+    
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
