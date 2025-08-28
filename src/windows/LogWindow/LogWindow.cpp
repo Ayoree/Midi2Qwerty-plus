@@ -11,11 +11,11 @@ void LogWindow::draw()
     clipper.Begin(Logger::instance().getBuffer().size());
     for (const auto& entry : Logger::instance().getBuffer())
     {
-        ImGui::TextColored(COLOR_GRAY, std::format("[{}]", entry.get_timeStr()).c_str());
+        ImGui::TextColored(COLOR_GRAY, std::format("[{}]", entry.getTimeStr()).c_str());
         ImGui::SameLine();
-        ImGui::TextColored(LogEntry::to_color(entry.type), std::format("[{}] ", LogEntry::to_string(entry.type)).c_str());
+        ImGui::TextColored(LogEntry::toColor(entry.type), std::format("[{}] ", LogEntry::typeToString(entry.type)).c_str());
         ImGui::SameLine();
-        ImGui::TextColored(LogEntry::to_color(entry.type), entry.msg.c_str());
+        ImGui::TextColored(LogEntry::toColor(entry.type), entry.msg.c_str());
     }
     clipper.End();
     

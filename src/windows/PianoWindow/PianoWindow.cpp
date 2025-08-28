@@ -4,13 +4,13 @@ PianoWindow::PianoWindow()
 {
     uint8_t iWhite = 0;
     uint8_t iBlack = 0;
-    for (uint8_t i = 0; i < PianoUtils::KEYS_ALL; ++i)
+    for (uint8_t i = 0; i < m_keys.size(); ++i)
     {
         m_keys[i] = make::uptr<PianoKey>(i);
         if (m_keys[i]->isBlack())
-        m_keysBlack[iBlack++] = m_keys[i].get();
+            m_keysBlack[iBlack++] = m_keys[i].get();
         else
-        m_keysWhite[iWhite++] = m_keys[i].get();
+            m_keysWhite[iWhite++] = m_keys[i].get();
     }
     setKeysPos();
     LOG_DEBUG("PianoWindow inited");

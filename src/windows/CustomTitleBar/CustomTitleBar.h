@@ -5,14 +5,23 @@
 
 class CustomTitleBar : private Drawable
 {
+private:
+    static constexpr inline int WINDOW_FLAGS = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove;
+    static constexpr inline float DRAG_MARGIN = 6.f;
+public:
+    static constexpr inline int s_windowHeight = 46;
+
+private:
+    // Singleton
     CustomTitleBar() = default;
     ~CustomTitleBar() = default;
+
 public:
-    // Singleton
     CustomTitleBar(const CustomTitleBar&) = delete;
     CustomTitleBar& operator=(const CustomTitleBar&) = delete;
     CustomTitleBar(CustomTitleBar&&) = delete;
     CustomTitleBar& operator=(CustomTitleBar&&) = delete;
+
     static CustomTitleBar& instance()
     {
         static CustomTitleBar instance = CustomTitleBar();
@@ -20,16 +29,9 @@ public:
     };
     void init(GLFWwindow* window);
 
-    void draw() override;
+    void draw() override final;
     void handleDrag();
 
 private:
     GLFWwindow* m_window = nullptr;
-
-public:
-    constexpr static int s_windowHeight = 46;
-
-private:
-    constexpr static int WINDOW_FLAGS = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove;
-    constexpr static float DRAG_MARGIN = 6.f;
 };

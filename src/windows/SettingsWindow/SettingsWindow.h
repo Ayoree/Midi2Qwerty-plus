@@ -5,21 +5,25 @@
 
 class SettingsWindow : private Drawable
 {
+private:
+    static constexpr inline int WINDOW_FLAGS = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+
+private:
     // Singleton
     SettingsWindow();
     ~SettingsWindow() = default;
+
 public:
     SettingsWindow(const SettingsWindow&) = delete;
     SettingsWindow& operator=(const SettingsWindow&) = delete;
     SettingsWindow(SettingsWindow&&) = delete;
     SettingsWindow& operator=(SettingsWindow&&) = delete;
-    static SettingsWindow& instance() // Singleton
+
+    static SettingsWindow& instance()
     {
         static SettingsWindow instance = SettingsWindow();
         return instance;
     };
-    void draw() override;
-
-private:
-    constexpr static int WINDOW_FLAGS = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    
+    void draw() override final;
 };

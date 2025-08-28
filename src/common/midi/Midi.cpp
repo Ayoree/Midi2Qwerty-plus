@@ -77,9 +77,9 @@ void Midi::setInput(bool isEnabled /*= true*/)
 {
     if (isEnabled)
     {
-        // TODO: find a way to link some callback function to PortMidi `pm_read_short`. It is need to remove busy-waiting for AsyncMidiPoll thread.
+        // TODO: find a way to link some callback function to PortMidi `pm_read_short`. It is needed to remove busy-waiting for AsyncMidiPoll thread.
         handlePossibleError(Pm_OpenInput(&m_inputStream.stream, m_inputStream.deviceID, nullptr, m_inputStream.BUF_SIZE, nullptr, nullptr));
-        m_inputPoll = make::uptr<AsyncMidiPoll>(m_inputStream); // Works unltil we delete it
+        m_inputPoll = make::uptr<AsyncMidiPoll>(m_inputStream); // Works in other thread unltil we delete it
     }
     else
     {
@@ -91,5 +91,15 @@ void Midi::setInput(bool isEnabled /*= true*/)
 
 void Midi::setOutput(bool isEnabled /*= true*/)
 {
-    
+    if (isEnabled)
+    {
+        handlePossibleError(Pm_OpenOutput(&m_outputStream.stream, m_outputStream.deviceID, nullptr, m_outputStream.BUF_SIZE, nullptr, nullptr, 0));
+        m_outputPoll = make::uptr<AsyncMidiPoll>(m_outputStream); // Works in other thread unltil we delete it
+    }
+    else
+    {
+        handlePossibleError(Pm_Close(m_outputStream.stream));
+        m_outputStream.stream = nullptr;
+        m_outputPoll = nullptr;
+    }
 }
