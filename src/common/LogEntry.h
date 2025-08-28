@@ -5,6 +5,9 @@
 
 struct LogEntry
 {
+private:
+    static constexpr inline std::array<const std::string_view, 4> s_typeToString = {"INFO", "ERROR", "WARNING", "DEBUG"};
+
 public:
     enum class Type {
         INFO,
@@ -12,23 +15,18 @@ public:
         WARNING,
         DEBUG,
     };
-    static const std::string_view to_string(Type type) {
-        return s_typeToString[static_cast<int>(type)];
-    }
-    static const ImColor to_color(Type type) {
+    static inline const std::string_view typeToString(Type type) { return s_typeToString[static_cast<int>(type)]; }
+    static inline const ImColor toColor(Type type)
+    {
         switch(type)
         {
             case Type::INFO: return COLOR_WHITE;
             case Type::ERROR: return COLOR_RED;
-#ifdef _DEBUG
             case Type::WARNING: return COLOR_YELLOW;
             case Type::DEBUG: return COLOR_GRAY;
-#endif // _DEBUG
             default: return COLOR_WHITE;
         }
     }
-private:
-    constexpr static std::array<const std::string_view, 4> s_typeToString = {"INFO", "ERROR", "WARNING", "DEBUG"};
 
 public:
     template <typename T>
@@ -39,7 +37,8 @@ public:
         timestamp(std::chrono::system_clock::now()) 
     {}
     
-    const std::string get_timeStr() const {
+    const std::string getTimeStr() const
+    {
         using namespace std::chrono;
 
         time_t inTime = system_clock::to_time_t(timestamp);
@@ -54,10 +53,9 @@ public:
         return std::format("{}.{:03d}", timeSS.str(), ms.count());
     }
 
-    std::string to_string() const {
-        return std::format("[{}][{}]\t{}", get_timeStr(), to_string(type), msg);
-    }
+    inline std::string toString() const { return std::format("[{}][{}]\t{}", getTimeStr(), typeToString(type), msg); }
     
+public:
     const Type type;
     const std::string msg;
     const std::chrono::system_clock::time_point timestamp;

@@ -46,10 +46,17 @@ void AsyncMidiPoll::readStreamData()
         PmMessage velocity = ((uint32_t) message >> 16 & 0xFFu);
         if (keyCode || velocity) {
             m_lastEventTime = std::chrono::steady_clock::now();
-            if (status != 176) // not sustain
+            if (status == 0b10110000) // sustain
             {
-                LOG_DEBUG(std::format("Event status: {}, key: {:04X}, velocity: {:04X}", status, keyCode, velocity));
-                uint8_t keyIndex = PianoUtils::code2Key(keyCode);
+                if (velocity != 0x00) // Press
+                    PianoKey::pressSpace();
+                else // Release
+                    PianoKey::releaseSpace();
+            }
+            else
+            {
+                //LOG_DEBUG(std::format("Event status: {}, key: {:04X}, velocity: {:04X}", status, keyCode, velocity));
+                uint8_t keyIndex = PianoKey::midiCode2KeyIndex(keyCode);
                 if (velocity != 0x00) // Press
                     PianoWindow::instance().pressKey(keyIndex);
                 else // Release

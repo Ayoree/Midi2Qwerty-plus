@@ -1,7 +1,6 @@
 #pragma once
 
 #include <thread>
-#include <condition_variable>
 #include <stop_token>
 #include "portmidi.h"
 #include "porttime.h"
@@ -10,8 +9,9 @@
 
 using MidiStreamCallback = std::function<void(PmTimestamp, uint8_t, PmMessage, PmMessage)>;
 
-struct MidiStream {
-    constexpr static uint16_t BUF_SIZE = 2048;
+struct MidiStream
+{
+    static constexpr uint16_t BUF_SIZE = 1024;
     PmDeviceID deviceID;
     PortMidiStream* stream;
     PmEvent buffer[BUF_SIZE];
@@ -20,9 +20,9 @@ struct MidiStream {
 class AsyncMidiPoll
 {
 private:
-    constexpr static std::chrono::nanoseconds SLEEP_TIME = std::chrono::milliseconds(1);
-    constexpr static std::chrono::nanoseconds LONG_SLEEP_TIME = std::chrono::milliseconds(100);
-    constexpr static std::chrono::nanoseconds LONG_SLEEP_TIME_MARGIN = std::chrono::seconds(30);
+    static constexpr inline std::chrono::nanoseconds SLEEP_TIME = std::chrono::milliseconds(1);
+    static constexpr inline std::chrono::nanoseconds LONG_SLEEP_TIME = std::chrono::milliseconds(100);
+    static constexpr inline std::chrono::nanoseconds LONG_SLEEP_TIME_MARGIN = std::chrono::seconds(30);
 
 public:
     AsyncMidiPoll(MidiStream& stream);

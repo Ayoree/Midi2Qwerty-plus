@@ -13,15 +13,21 @@
 #endif // _DEBUG
 
 class Logger
-{
+{    
+private:
+    static constexpr inline int s_maxLogSize = 40'960;
+
+private:
     // Singleton
     Logger() = default;
     ~Logger() = default;
+
 public:
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
     Logger(Logger&&) = delete;
     Logger& operator=(Logger&&) = delete;
+
     static Logger& instance()
     {
         static Logger instance = Logger();
@@ -37,7 +43,7 @@ public:
         LogEntry entry(type, std::forward<T>(message));
         {
             std::lock_guard<std::mutex> lock(m_mutex);
-            std::cout << entry.to_string() << std::endl;
+            std::cout << entry.toString() << std::endl;
             m_buf.emplace_back(std::move(entry));
             if (m_buf.size() > s_maxLogSize)
                 m_buf.pop_front();
@@ -47,7 +53,4 @@ public:
 private:
     std::deque<LogEntry> m_buf;
     std::mutex m_mutex;
-
-private:
-    constexpr static int s_maxLogSize = 40'960;
 };

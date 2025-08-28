@@ -7,17 +7,23 @@
 #include "Defines.h"
 #include "AsyncMidiPoll.h"
 
-typedef std::map<size_t, const PmDeviceInfo*> PmDeviceMap;
 
-class Midi {
+class Midi
+{
+public:
+    using PmDeviceMap = std::map<size_t, const PmDeviceInfo*>;
+
+private:
     // Singleton
     Midi();
     ~Midi();
+
 public:
     Midi(const Midi&) = delete;
     Midi& operator=(const Midi&) = delete;
     Midi(Midi&&) = delete;
     Midi& operator=(Midi&&) = delete;
+
     static Midi& instance()
     {
         static Midi instance = Midi();
@@ -25,11 +31,11 @@ public:
     }
 
     void updateDevices();
-    const PmDeviceMap& getDevices() const { return m_devices; }
-    const PmDeviceInfo* getSelectedInputDevice() const;
-    const PmDeviceInfo* getSelectedOutputDevice() const;
-    void setInputDevice(PmDeviceID newInputID);
-    void setOutputDevice(PmDeviceID newOutputID);
+    inline const PmDeviceMap& getDevices() const { return m_devices; }
+    inline const PmDeviceInfo* getSelectedInputDevice() const;
+    inline const PmDeviceInfo* getSelectedOutputDevice() const;
+    inline void setInputDevice(PmDeviceID newInputID);
+    inline void setOutputDevice(PmDeviceID newOutputID);
     void setInput(bool isEnabled = true);
     void setOutput(bool isEnabled = true);
 

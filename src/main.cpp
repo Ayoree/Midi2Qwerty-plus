@@ -1,13 +1,12 @@
-#define NOGDI // remove GDI from windows.h
-#include <windows.h>
 #include "pch.h"
 #include "Defines.h"
 #include "common/Logger.h"
 #include "common/midi/Midi.h"
 #include "windows/CustomTitleBar/CustomTitleBar.h"
+#include "windows/LogWindow/LogWindow.h"
+#include "windows/StatusWindow/StatusWindow.h"
 #include "windows/SettingsWindow/SettingsWindow.h"
 #include "windows/PianoWindow/PianoWindow.h"
-#include "windows/LogWindow/LogWindow.h"
 
 constexpr Vec2<uint16_t> WINDOW_SIZE = {PianoWindow::WINDOW_SIZE.x, 604};
 
@@ -108,6 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         // Draw custom windows
         CustomTitleBar::instance().draw();
         LogWindow::instance().draw();
+        StatusWindow::instance().draw();
         SettingsWindow::instance().draw();
         PianoWindow::instance().draw();
 
