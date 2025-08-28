@@ -12,8 +12,8 @@ using MidiStreamCallback = std::function<void(PmTimestamp, uint8_t, PmMessage, P
 struct MidiStream
 {
     static constexpr uint16_t BUF_SIZE = 1024;
-    PmDeviceID deviceID;
-    PortMidiStream* stream;
+    PmDeviceID deviceID = pmNoDevice;
+    PortMidiStream* stream = nullptr;
     PmEvent buffer[BUF_SIZE];
 };
 
@@ -28,12 +28,15 @@ public:
     AsyncMidiPoll(MidiStream& stream);
     ~AsyncMidiPoll();
 
+    void setOutputStream(PortMidiStream* stream);
+
 private:
     void startPoll(std::stop_token stoken);
     void readStreamData();
 
 private:
     MidiStream& m_stream;
+    std::atomic<PortMidiStream*> m_outputStream;
     std::jthread m_workerThread;
     std::chrono::steady_clock::time_point m_lastEventTime;
 };

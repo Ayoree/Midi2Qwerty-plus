@@ -13,11 +13,15 @@ AsyncMidiPoll::~AsyncMidiPoll()
     m_workerThread.join();
 }
 
+void AsyncMidiPoll::setOutputStream(PortMidiStream* stream)
+{
+    m_outputStream.store(stream);
+}
+
 void AsyncMidiPoll::startPoll(std::stop_token stoken)
 {
     using namespace std::chrono;
     LOG_DEBUG("AsyncMidiPoll thread started");
-    LOG_DEBUG(std::format("Device id: {}", static_cast<int>(m_stream.deviceID)));
 
     while (!stoken.stop_requested()) {
         readStreamData();
@@ -33,11 +37,18 @@ void AsyncMidiPoll::readStreamData()
     if (count < 0) [[unlikely]]
     {
         PmError error = static_cast<PmError>(count);
-        LOG_ERROR("Unexpected error occured during midi stream reading:");
-        LOG_ERROR(Pm_GetErrorText(error));
+        LOG_ERROR(std::format("Unexpected error occured during midi input stream reading:{}", Pm_GetErrorText(error)));
         m_workerThread.request_stop();
         return;
     }
+    
+    if (m_outputStream.load())
+    {
+        PmError error = Pm_Write(m_outputStream.load(), m_stream.buffer, count);
+        if (error != pmNoError)
+            LOG_ERROR(std::format("Unexpected error occured during midi output stream writing: {}", Pm_GetErrorText(error)));
+    }
+
     for (int ev = 0; ev < count; ev++) {
         //PmTimestamp timestamp = m_stream.buffer[ev].timestamp;
         PmMessage& message = m_stream.buffer[ev].message;

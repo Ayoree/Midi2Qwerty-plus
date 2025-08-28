@@ -11,7 +11,7 @@
 class Midi
 {
 public:
-    using PmDeviceMap = std::map<size_t, const PmDeviceInfo*>;
+    using PmDeviceMap = std::map<PmDeviceID, const PmDeviceInfo*>;
 
 private:
     // Singleton
@@ -30,17 +30,17 @@ public:
         return instance;
     }
 
-    void updateDevices();
     inline const PmDeviceMap& getDevices() const { return m_devices; }
-    inline const PmDeviceInfo* getSelectedInputDevice() const;
-    inline const PmDeviceInfo* getSelectedOutputDevice() const;
-    inline void setInputDevice(PmDeviceID newInputID);
-    inline void setOutputDevice(PmDeviceID newOutputID);
-    void setInput(bool isEnabled = true);
-    void setOutput(bool isEnabled = true);
+    const PmDeviceInfo* getSelectedInputDevice() const;
+    const PmDeviceInfo* getSelectedOutputDevice() const;
+    void setInputDevice(PmDeviceID newInputID);
+    void setOutputDevice(PmDeviceID newOutputID);
 
 private:
     bool handlePossibleError(const PmError err) const;
+    void updateDevices();
+    void setInputState(bool isEnabled = true);
+    void setOutputState(bool isEnabled = true);
 
 private:
     PmDeviceMap m_devices;
