@@ -3,16 +3,17 @@
 
 Midi::Midi()
 {
-    Pm_Initialize();
+    handlePossibleError(Pm_Initialize());
     updateDevices();
-    //m_inputStream.deviceID = Pm_GetDefaultInputDeviceID();
-    //m_outputStream.deviceID = Pm_GetDefaultInputDeviceID();
-    setInput(true);
+    m_inputStream.deviceID = Pm_GetDefaultInputDeviceID();
+    m_outputStream.deviceID = pmNoDevice;
+    if (m_inputStream.deviceID != pmNoDevice)
+        setInputState(true);
 }
 
 Midi::~Midi()
 {
-    Pm_Terminate();
+    handlePossibleError(Pm_Terminate());
 }
 
 bool Midi::handlePossibleError(const PmError err) const
@@ -23,8 +24,8 @@ bool Midi::handlePossibleError(const PmError err) const
         return false;
         
     default:
-        LOG_ERROR(Pm_GetErrorText(err));
         IM_ASSERT(true);
+        LOG_ERROR(Pm_GetErrorText(err));
         return true; 
     }
 }
@@ -43,63 +44,96 @@ void Midi::updateDevices()
             return;
         }
         m_devices[i] = deviceInfo;
-
-        // TODO: remove this:
-        if (deviceInfo->input && (i == 1 || i ==3))
-            m_inputStream.deviceID = i;
         LOG_DEBUG(std::format("Index: {}, Device name: {}", i, deviceInfo->name));
     }
 }
 
 const PmDeviceInfo* Midi::getSelectedInputDevice() const
 {
+    if (m_inputStream.deviceID == pmNoDevice) [[unlikely]]
+    {
+        LOG_ERROR("No selected MIDI input device");
+        return nullptr;
+    }
     IM_ASSERT(m_devices.contains(m_inputStream.deviceID));
     return m_devices.at(m_inputStream.deviceID);
 }
 
 const PmDeviceInfo* Midi::getSelectedOutputDevice() const
 {
+    if (m_outputStream.deviceID == pmNoDevice) [[unlikely]]
+    {
+        LOG_INFO("No selected MIDI output device");
+        return nullptr;
+    }
     IM_ASSERT(m_devices.contains(m_outputStream.deviceID));
     return m_devices.at(m_outputStream.deviceID);
 }
 
 void Midi::setInputDevice(PmDeviceID newInputID)
 {
+    if (newInputID != pmNoDevice && (!m_devices.contains(newInputID) || !m_devices.at(newInputID)->input))
+    {
+        LOG_ERROR(std::format("No available input device with id: {}", newInputID));
+        return;
+    }
+    if (newInputID == m_inputStream.deviceID)
+        return;
+    setInputState(false);
     m_inputStream.deviceID = newInputID;
+    if (newInputID != pmNoDevice)
+        setInputState(true);
 }
 
 void Midi::setOutputDevice(PmDeviceID newOutputID)
 {
+    if (newOutputID != pmNoDevice && (!m_devices.contains(newOutputID) || !m_devices.at(newOutputID)->output))
+    {
+        LOG_ERROR(std::format("No available output device with id: {}", newOutputID));
+        return;
+    }
+    if (newOutputID == m_outputStream.deviceID)
+        return;
+
+    setOutputState(false);
     m_outputStream.deviceID = newOutputID;
+    if (newOutputID != pmNoDevice)
+        setOutputState(true);
 }
 
-void Midi::setInput(bool isEnabled /*= true*/)
+void Midi::setInputState(bool isEnabled /*= true*/)
 {
     if (isEnabled)
     {
         // TODO: find a way to link some callback function to PortMidi `pm_read_short`. It is needed to remove busy-waiting for AsyncMidiPoll thread.
         handlePossibleError(Pm_OpenInput(&m_inputStream.stream, m_inputStream.deviceID, nullptr, m_inputStream.BUF_SIZE, nullptr, nullptr));
         m_inputPoll = make::uptr<AsyncMidiPoll>(m_inputStream); // Works in other thread unltil we delete it
+        if (m_outputStream.stream)
+            m_inputPoll->setOutputStream(m_outputStream.stream);
     }
     else
     {
-        handlePossibleError(Pm_Close(m_inputStream.stream));
+        if (m_inputStream.stream)
+            handlePossibleError(Pm_Close(m_inputStream.stream));
         m_inputStream.stream = nullptr;
         m_inputPoll = nullptr;
     }
 }
 
-void Midi::setOutput(bool isEnabled /*= true*/)
+void Midi::setOutputState(bool isEnabled /*= true*/)
 {
     if (isEnabled)
     {
         handlePossibleError(Pm_OpenOutput(&m_outputStream.stream, m_outputStream.deviceID, nullptr, m_outputStream.BUF_SIZE, nullptr, nullptr, 0));
-        m_outputPoll = make::uptr<AsyncMidiPoll>(m_outputStream); // Works in other thread unltil we delete it
+        if (m_inputPoll)
+            m_inputPoll->setOutputStream(m_outputStream.stream);
     }
     else
     {
-        handlePossibleError(Pm_Close(m_outputStream.stream));
+        if (m_inputPoll)
+            m_inputPoll->setOutputStream(nullptr);
+        if (m_outputStream.stream)
+            handlePossibleError(Pm_Close(m_outputStream.stream));
         m_outputStream.stream = nullptr;
-        m_outputPoll = nullptr;
     }
 }

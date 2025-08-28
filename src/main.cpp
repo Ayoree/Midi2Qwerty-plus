@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     GLFWwindow* window = glfwCreateWindow((int)(WINDOW_SIZE.x * main_scale) + 2, (int)(WINDOW_SIZE.y * main_scale), "MIDI 2 QWERTY plus", nullptr, nullptr);
     if (window == nullptr)
     {
-        LOG_ERROR("Unable to initialize window!");
+        LOG_ERROR("Unable to initialize window");
         return 1;
     }
 
@@ -111,7 +111,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         SettingsWindow::instance().draw();
         PianoWindow::instance().draw();
 
-        //ImGui::ShowDemoWindow(&show_demo_window);
+        //ImGui::ShowDemoWindow();
         // Rendering
         ImGui::Render();
         int display_w, display_h;
