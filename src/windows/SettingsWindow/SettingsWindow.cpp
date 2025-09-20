@@ -63,5 +63,49 @@ void SettingsWindow::draw()
         ImGui::EndPopup();
     }
 
+    static std::string fileName = "<None>";
+    if (ImGui::Button("Open MIDI file"))
+        ImGui::OpenPopup("midi_file_popup");
+    ImGui::SameLine();
+    ImGui::TextUnformatted(fileName.c_str());
+    if (ImGui::BeginPopup("midi_file_popup"))
+    {
+        ImGui::SeparatorText("Select MIDI file");
+        if (ImGui::Selectable("<None>"))
+        {
+            Midi::instance().stopMidiFile();
+            Midi::instance().closeMidiFile();
+            fileName = "<None>";
+        }
+
+        for (const auto& entry : std::filesystem::directory_iterator("./songs/")) {
+            if (entry.is_regular_file()) {
+                std::string file = entry.path().filename().string();
+                if (!file.ends_with(".mid") && !file.ends_with(".midi"))
+                    continue;
+                if (ImGui::Selectable(file.c_str()))
+                {
+                    fileName = file;
+                    Midi::instance().stopMidiFile();
+                    Midi::instance().closeMidiFile();
+                    Midi::instance().openMidiFile(fileName);
+                }
+            }
+        }
+        ImGui::EndPopup();
+    }
+    // Help tooltip
+    {
+        ImGui::SameLine();
+        ImGui::TextDisabled("(?)");
+           if (ImGui::BeginItemTooltip())
+           {
+               ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+               ImGui::TextUnformatted("Press 'F5' To play selected file.\nPress 'Shift + F5' to stop playing");
+               ImGui::PopTextWrapPos();
+               ImGui::EndTooltip();
+           }
+    }
+
     ImGui::End();
 }

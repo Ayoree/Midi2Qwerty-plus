@@ -1,5 +1,9 @@
 #include "Midi.h"
 #include "common/Logger.h"
+#include "MidiFile.h"
+#include "MidiFileEvent.h"
+
+using namespace smf;
 
 Midi::Midi()
 {
@@ -101,6 +105,53 @@ void Midi::setOutputDevice(PmDeviceID newOutputID)
         setOutputState(true);
 }
 
+void Midi::openMidiFile(const std::string& filename)
+{
+    if (filename.empty())
+    {
+        LOG_ERROR("Filename is empty");
+        return;
+    }
+    MidiFile midifile;
+    midifile.read("./songs/" + filename);
+    midifile.doTimeAnalysis();
+    midifile.linkNotePairs();
+    
+    std::deque<MidiFileEvent> events;
+    int tracks = midifile.getTrackCount();
+    for (int track = 0; track < tracks; track++) {
+        for (int event = 0; event < midifile[track].size(); event++) {
+            MidiEvent& midiEvent = midifile[track][event];
+            if (midiEvent.size() == 0 || midiEvent.isMetaMessage()) {
+                continue;
+            }      
+            events.emplace_back(midiEvent.seconds, midiEvent);
+        }
+    }
+
+    m_midiPlayer = std::make_unique<MidiPlayer>(std::move(events));
+    m_midiPlayer->setOutputStream(m_outputStream.stream);
+}
+
+void Midi::closeMidiFile()
+{
+    m_midiPlayer = nullptr;
+}
+
+void Midi::playMidiFile() const
+{
+    if (m_midiPlayer)
+        m_midiPlayer->start();
+    else
+        LOG_ERROR("No midi-file selected");
+}
+
+void Midi::stopMidiFile()
+{
+    if (m_midiPlayer)
+        m_midiPlayer->stop();
+}
+
 void Midi::setInputState(bool isEnabled /*= true*/)
 {
     if (isEnabled)
@@ -127,11 +178,15 @@ void Midi::setOutputState(bool isEnabled /*= true*/)
         handlePossibleError(Pm_OpenOutput(&m_outputStream.stream, m_outputStream.deviceID, nullptr, m_outputStream.BUF_SIZE, nullptr, nullptr, 0));
         if (m_inputPoll)
             m_inputPoll->setOutputStream(m_outputStream.stream);
+        if (m_midiPlayer)
+            m_midiPlayer->setOutputStream(m_outputStream.stream);
     }
     else
     {
         if (m_inputPoll)
             m_inputPoll->setOutputStream(nullptr);
+        if (m_midiPlayer)
+            m_midiPlayer->setOutputStream(nullptr);
         if (m_outputStream.stream)
             handlePossibleError(Pm_Close(m_outputStream.stream));
         m_outputStream.stream = nullptr;

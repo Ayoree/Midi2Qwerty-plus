@@ -1,7 +1,5 @@
 #pragma once
 
-#include <thread>
-#include <stop_token>
 #include "portmidi.h"
 #include "porttime.h"
 #include "pch.h"

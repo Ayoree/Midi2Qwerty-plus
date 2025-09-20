@@ -17,6 +17,10 @@ add_subdirectory(submodules/glfw)
 # Add PortMidi as submodule
 add_subdirectory(submodules/portmidi)
 
+# Add MidiFile as submodule
+set(BUILD_MIDILIBRARY_ONLY ON CACHE BOOL "Build only the midifile library" FORCE)
+add_subdirectory(submodules/midifile)
+
 # TODO: Add TBB
 # ...
 
@@ -55,6 +59,7 @@ target_include_directories(Midi2Qwerty_plus PRIVATE
     submodules/portmidi
     submodules/portmidi/pm_common
     submodules/portmidi/porttime
+    submodules/midifile/include
 )
 
 # Add include directories for imgui
@@ -71,6 +76,7 @@ target_link_libraries(Midi2Qwerty_plus PRIVATE
     glfw
     OpenGL::GL
     portmidi
+    midifile
 )
 
 # Add compile definitions

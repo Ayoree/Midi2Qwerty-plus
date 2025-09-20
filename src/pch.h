@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <format>
 #include <cmath>
 #include <unordered_set>
@@ -13,6 +14,9 @@
 #include <memory>
 #include <array>
 #include <deque>
+#include <stop_token>
+#include <thread>
+#include <mutex>
 
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"

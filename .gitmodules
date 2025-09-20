@@ -7,3 +7,6 @@
 [submodule "submodules/portmidi"]
 	path = submodules/portmidi
 	url = https://github.com/PortMidi/portmidi.git
+[submodule "submodules/midifile"]
+	path = submodules/midifile
+	url = https://github.com/craigsapp/midifile
