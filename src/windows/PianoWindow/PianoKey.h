@@ -20,10 +20,10 @@ private:
     static constexpr inline uint8_t FIRST_KEY_OFFSET = 0x15;
     // Piano keyboard keys, that should be pressed
     static constexpr inline std::array<char, KEYS_ALL + 1> QWERTY_LIST = {"1234567890qwert1!2@34$5%6^78*9(0qQwWeErtTyYuiIoOpPasSdDfgGhHjJklLzZxcCvVbBnmyuiopasdfghj"};
-    // Decides amount of keys, that should be pressed WITH CTRL
+    // Decides amount of keys (left side keys), that should be pressed WITH CTRL
     static constexpr inline uint8_t COMMON_NOTES_OFFSET = 15;
     // Decides amount of keys, that should be pressed WITHOUT CTRL
-    static constexpr inline uint8_t COMMON_NOTES_AMOUNT = 61;
+    static constexpr inline uint8_t COMMON_NOTES_AMOUNT = 60;
     
 public:
     static const uint8_t midiCode2KeyIndex(const uint32_t code);

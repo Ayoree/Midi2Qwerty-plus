@@ -6,7 +6,7 @@
 #include "porttime.h"
 #include "Defines.h"
 #include "AsyncMidiPoll.h"
-
+#include "MidiPlayer.h"
 
 class Midi
 {
@@ -35,6 +35,10 @@ public:
     const PmDeviceInfo* getSelectedOutputDevice() const;
     void setInputDevice(PmDeviceID newInputID);
     void setOutputDevice(PmDeviceID newOutputID);
+    void openMidiFile(const std::string& filename);
+    void closeMidiFile();
+    void playMidiFile() const;
+    void stopMidiFile();
 
 private:
     bool handlePossibleError(const PmError err) const;
@@ -46,6 +50,7 @@ private:
     PmDeviceMap m_devices;
     MidiStream m_inputStream;
     MidiStream m_outputStream;
-    std::uptr<AsyncMidiPoll> m_inputPoll;
-    std::uptr<AsyncMidiPoll> m_outputPoll;
+    std::uptr<AsyncMidiPoll> m_inputPoll = nullptr;
+    std::uptr<AsyncMidiPoll> m_outputPoll = nullptr;
+    std::uptr<MidiPlayer> m_midiPlayer = nullptr;
 };
