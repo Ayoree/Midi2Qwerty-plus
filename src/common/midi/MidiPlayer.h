@@ -7,6 +7,7 @@
 
 using namespace smf;
 
+// This class is used for playing midi files
 class MidiPlayer
 {
 public:

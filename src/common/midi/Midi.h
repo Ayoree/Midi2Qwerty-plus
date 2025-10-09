@@ -8,6 +8,7 @@
 #include "AsyncMidiPoll.h"
 #include "MidiPlayer.h"
 
+// This class is used for setup all interactions with midi data
 class Midi
 {
 public:

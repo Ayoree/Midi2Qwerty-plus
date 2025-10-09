@@ -15,6 +15,7 @@ struct MidiStream
     PmEvent buffer[BUF_SIZE];
 };
 
+// This class is used for asyncronously reading data from midi-cable
 class AsyncMidiPoll
 {
 private:

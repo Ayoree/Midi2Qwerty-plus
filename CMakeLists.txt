@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Debug")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release")
+set(LAYOUT_FILE "${CMAKE_SOURCE_DIR}/res/main_layout.ini")
 
 # Set Release-specific compile options
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
@@ -85,4 +86,12 @@ target_compile_definitions(Midi2Qwerty_plus PUBLIC
     _UNICODE
     $<$<CONFIG:Debug>:_DEBUG>
     $<$<CONFIG:Release>:_RELEASE>
+)
+
+# Copy res/main_layout.ini to output folder
+add_custom_command(TARGET Midi2Qwerty_plus POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${LAYOUT_FILE}"
+    "$<TARGET_FILE_DIR:Midi2Qwerty_plus>/main_layout.ini"
+    COMMENT "Copying main_layout.ini to output directory"
 )

@@ -38,12 +38,20 @@ public:
 private:
     // Returns chars, that require pressing shift to type them
     static inline const std::unordered_map<char, char>& getSpecialChars();
+
+    // Used for initialization
     static inline const bool generateIsBlack(PianoKey* key);
+    // Used for initialization
     static inline const std::string generateName(PianoKey* key);
+    // Used for initialization
     static inline const char generateQwertyChar(PianoKey* key);
+    // Used for initialization
     static inline const WORD generateScanCode(PianoKey* key);
+    // Used for initialization
     static inline const bool generateIsShift(PianoKey* key);
+    // Used for initialization
     static inline const bool generateIsCtrl(PianoKey* key);
+
     static inline const INPUT createInput(WORD vkKeyCode, bool isPress);
 
 public:

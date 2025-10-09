@@ -7,9 +7,6 @@ static void glfw_error_callback(int error, const char* description)
 
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
-    //if (ImGui::GetIO().WantCaptureKeyboard) {
-    //    return;
-    //}
     
     if (action == GLFW_PRESS)
     {

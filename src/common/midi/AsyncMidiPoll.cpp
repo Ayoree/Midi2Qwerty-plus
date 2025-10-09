@@ -45,6 +45,7 @@ void AsyncMidiPoll::readStreamData()
         return;
     }
     
+    // Writing to output stream
     if (m_outputStream.load())
     {
         PmError error = Pm_Write(m_outputStream.load(), m_stream.buffer, count);
@@ -52,6 +53,7 @@ void AsyncMidiPoll::readStreamData()
             LOG_ERROR(std::format("Unexpected error occured during midi output stream writing: {}", Pm_GetErrorText(error)));
     }
 
+    // Pressing QWERTY keys
     for (int ev = 0; ev < count; ev++) {
         PmMessage& message = m_stream.buffer[ev].message;
 
