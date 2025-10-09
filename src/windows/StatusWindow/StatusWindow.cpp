@@ -1,4 +1,5 @@
 #include "StatusWindow.h"
+#include "common/Settings.h"
 
 void StatusWindow::draw()
 {
@@ -17,6 +18,12 @@ void StatusWindow::draw()
         {
             ImGui::SameLine();
             ImGui::TextColored(COLOR_YELLOW, std::format("{:^5}", key->getChar()).c_str());
+        }
+        if (Settings::instance().enableVelocity)
+        {
+            ImGui::TextColored(COLOR_WHITE, "Velocity:\t");
+            ImGui::SameLine();
+            ImGui::TextColored(COLOR_WHITE, std::format("{:.2f}", (double)PianoKey::getVelocity() / 127.f).c_str());
         }
         ImGui::PopStyleVar();
     }

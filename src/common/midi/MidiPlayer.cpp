@@ -60,7 +60,10 @@ void MidiPlayer::startPoll(std::stop_token stoken)
             {
                 int keyIndex = event.getKeyNumber() - 21; // for 88-keys keyboard
                 if (event.isNoteOn())
+                {
+                    PianoKey::setVelocity(event.getVelocity());
                     PianoWindow::instance().pressKey(keyIndex);
+                }
                 else if (event.isNoteOff())
                     PianoWindow::instance().releaseKey(keyIndex);
             }
@@ -79,5 +82,5 @@ void MidiPlayer::startPoll(std::stop_token stoken)
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     }
-    stop();
+    m_isRunning.store(false);
 }

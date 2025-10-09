@@ -24,11 +24,16 @@ private:
     static constexpr inline uint8_t COMMON_NOTES_OFFSET = 15;
     // Decides amount of keys, that should be pressed WITHOUT CTRL
     static constexpr inline uint8_t COMMON_NOTES_AMOUNT = 60;
+    // Velocities
+    static constexpr inline std::array<char, 33> VELOCITIES = {"1234567890qwertyuiopasdfghjklzxc"};
+    static unsigned short CURRENT_VELOCITY;
     
 public:
     static const uint8_t midiCode2KeyIndex(const uint32_t code);
     static const void pressSpace();
     static const void releaseSpace();
+    static const void setVelocity(int velocity);
+    static const unsigned short getVelocity() { return CURRENT_VELOCITY; }
     
 private:
     // Returns chars, that require pressing shift to type them
@@ -54,6 +59,7 @@ public:
     inline char getChar() const { return m_qwertyChar; }
     inline void setPos(ImVec2 pos) { m_pos = pos; }
 
+    bool isPressed() const { return m_isPressed; }
     void press();
     void release();
     

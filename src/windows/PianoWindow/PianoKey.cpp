@@ -3,6 +3,8 @@
 #include "windows/StatusWindow/StatusWindow.h"
 #include "common/Settings.h"
 
+unsigned short PianoKey::CURRENT_VELOCITY = 0;
+
 PianoKey::PianoKey(uint8_t keyId) :
     m_id(keyId),
     m_isBlack(generateIsBlack(this)),
@@ -123,6 +125,39 @@ const void PianoKey::releaseSpace()
     {
         INPUT input = createInput(MapVirtualKey(VK_SPACE, MAPVK_VK_TO_VSC), false);
         SendInput(1, &input, sizeof(INPUT));
+    }
+}
+
+const void PianoKey::setVelocity(int velocity)
+{
+    if (velocity > 127 || velocity < 0) [[unlikely]]
+    {
+        LOG_ERROR("Velocity is out of range");
+        return;
+    }
+    if (velocity == CURRENT_VELOCITY)
+        return;
+
+    if (Settings::instance().enableVelocity)
+    {
+        unsigned short index = velocity / 4;
+        IM_ASSERT(index < VELOCITIES.size());
+        char ch = VELOCITIES.at(index);
+
+        std::vector<INPUT> inputVec;
+        inputVec.reserve(4);
+        inputVec.push_back(createInput(MapVirtualKey(VK_LMENU, MAPVK_VK_TO_VSC), true)); // press ALT key
+        UINT scanCode;
+        if (ch >= 'a' && ch <= 'z')
+            scanCode = MapVirtualKey('A' + (ch - 'a'), MAPVK_VK_TO_VSC);
+        else
+            scanCode = MapVirtualKey(ch, MAPVK_VK_TO_VSC);;
+        inputVec.push_back(createInput(scanCode, true));
+        inputVec.push_back(createInput(MapVirtualKey(VK_LMENU, MAPVK_VK_TO_VSC), false)); // release ALT key
+        inputVec.push_back(createInput(scanCode, false));
+        SendInput(4, inputVec.data(), sizeof(INPUT));
+
+        CURRENT_VELOCITY = velocity;
     }
 }
 
