@@ -7,7 +7,7 @@
 #ifdef _DEBUG
     #define LOG_WARN(str) Logger::instance().log(str, LogEntry::Type::WARNING)
     #define LOG_DEBUG(str) Logger::instance().log(str, LogEntry::Type::DEBUG)
-#else
+#else // Do not log warnings and debugs in release build
     #define LOG_WARN(str)
     #define LOG_DEBUG(str)
 #endif // _DEBUG

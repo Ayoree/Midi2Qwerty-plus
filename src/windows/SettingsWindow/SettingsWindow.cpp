@@ -101,7 +101,7 @@ void SettingsWindow::draw()
            if (ImGui::BeginItemTooltip())
            {
                ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-               ImGui::TextUnformatted("Press 'F5' To play selected file.\nPress 'Shift + F5' to stop playing");
+               ImGui::TextUnformatted("Press 'F5' to play selected file.\nPress 'Shift + F5' to stop playing");
                ImGui::PopTextWrapPos();
                ImGui::EndTooltip();
            }
