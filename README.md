@@ -5,6 +5,7 @@
 ## Translations
 - [Русский](README.md)
 - [English](README.en.md)
+<img width="938" height="604" alt="Midi2Qwerty_plus_l0ANUpOYJG" src="https://github.com/user-attachments/assets/a3c64a0d-b83d-4f3c-b08f-a535c013a9c8" />
 
 ## Описание Настроек
 1. `Enable QWERTY output`, если включено, то будут эмулироваться нажатия клавиш клавиатуры при проигрывании нот.
