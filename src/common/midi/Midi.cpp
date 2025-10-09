@@ -2,6 +2,7 @@
 #include "common/Logger.h"
 #include "MidiFile.h"
 #include "MidiFileEvent.h"
+#include "windows/PianoWindow/PianoWindow.h"
 
 using namespace smf;
 
@@ -129,6 +130,10 @@ void Midi::openMidiFile(const std::string& filename)
         }
     }
 
+    std::sort(events.begin(), events.end(), [](const MidiFileEvent& e1, const MidiFileEvent& e2) {
+        return e1.time < e2.time;
+    });
+
     m_midiPlayer = std::make_unique<MidiPlayer>(std::move(events));
     m_midiPlayer->setOutputStream(m_outputStream.stream);
 }
@@ -150,6 +155,7 @@ void Midi::stopMidiFile()
 {
     if (m_midiPlayer)
         m_midiPlayer->stop();
+    PianoWindow::instance().releaseAll();
 }
 
 void Midi::setInputState(bool isEnabled /*= true*/)

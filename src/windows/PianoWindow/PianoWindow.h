@@ -30,6 +30,7 @@ public:
     void draw() override final;
     void pressKey(uint8_t keyID) const;
     void releaseKey(uint8_t keyID) const;
+    void releaseAll() const;
     
 private:
     void setKeysPos();

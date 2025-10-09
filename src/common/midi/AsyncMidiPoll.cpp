@@ -1,5 +1,8 @@
 #include "AsyncMidiPoll.h"
 #include "windows/PianoWindow/PianoWindow.h"
+#include "MidiFile.h"
+
+using namespace smf;
 
 AsyncMidiPoll::AsyncMidiPoll(MidiStream& stream) :
     m_stream(stream),
@@ -37,7 +40,7 @@ void AsyncMidiPoll::readStreamData()
     if (count < 0) [[unlikely]]
     {
         PmError error = static_cast<PmError>(count);
-        LOG_ERROR(std::format("Unexpected error occured during midi input stream reading:{}", Pm_GetErrorText(error)));
+        LOG_ERROR(std::format("Unexpected error occured during midi input stream reading: {}", Pm_GetErrorText(error)));
         m_workerThread.request_stop();
         return;
     }
@@ -45,34 +48,36 @@ void AsyncMidiPoll::readStreamData()
     if (m_outputStream.load())
     {
         PmError error = Pm_Write(m_outputStream.load(), m_stream.buffer, count);
-        if (error != pmNoError)
+        if (error != pmNoError) [[unlikely]]
             LOG_ERROR(std::format("Unexpected error occured during midi output stream writing: {}", Pm_GetErrorText(error)));
     }
 
     for (int ev = 0; ev < count; ev++) {
-        //PmTimestamp timestamp = m_stream.buffer[ev].timestamp;
         PmMessage& message = m_stream.buffer[ev].message;
-        uint8_t status = ((uint32_t) message & 0xFFu);
-        PmMessage keyCode = (((uint32_t) message >> 8) & 0xFFu);
-        PmMessage velocity = ((uint32_t) message >> 16 & 0xFFu);
-        if (keyCode || velocity) {
-            m_lastEventTime = std::chrono::steady_clock::now();
-            if (status == 0b10110000) // sustain
+
+        // Converting PmMessage to MidiEvent
+       std::vector<unsigned char> bytes;
+        for (int i = 0; i < 3; ++i) {
+            bytes.push_back((message >> (8 * i)) & 0xFFu);
+        }
+        MidiEvent midiEvent;
+        midiEvent.assign(bytes.begin(), bytes.end());
+
+        m_lastEventTime = std::chrono::steady_clock::now();
+        if (midiEvent.isSustainOn())
+            PianoKey::pressSpace();
+        else if (midiEvent.isSustainOff())
+            PianoKey::releaseSpace();
+        else
+        {
+            int keyIndex = midiEvent.getKeyNumber() - 21; // for 88-keys keyboard
+            if (midiEvent.isNoteOn())
             {
-                if (velocity != 0x00) // Press
-                    PianoKey::pressSpace();
-                else // Release
-                    PianoKey::releaseSpace();
+                PianoKey::setVelocity(midiEvent.getVelocity());
+                PianoWindow::instance().pressKey(keyIndex);
             }
-            else
-            {
-                //LOG_DEBUG(std::format("Event status: {}, key: {:04X}, velocity: {:04X}", status, keyCode, velocity));
-                uint8_t keyIndex = PianoKey::midiCode2KeyIndex(keyCode);
-                if (velocity != 0x00) // Press
-                    PianoWindow::instance().pressKey(keyIndex);
-                else // Release
-                    PianoWindow::instance().releaseKey(keyIndex);
-            }
+            else if (midiEvent.isNoteOff() || midiEvent.getVelocity() == 0)
+                PianoWindow::instance().releaseKey(keyIndex);
         }
     }
 }

@@ -69,3 +69,12 @@ void PianoWindow::releaseKey(uint8_t keyID) const
     }
     m_keys.at(keyID)->release();
 }
+
+void PianoWindow::releaseAll() const
+{
+    for (const auto& key : m_keys)
+    {
+        if (key->isPressed())
+            key->release();
+    }
+}
