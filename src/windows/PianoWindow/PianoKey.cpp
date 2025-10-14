@@ -112,7 +112,7 @@ const uint8_t PianoKey::midiCode2KeyIndex(const uint32_t code)
 
 const void PianoKey::pressSpace()
 {
-    if (Settings::instance().enableOutput)
+    if (Settings::instance().enableOutput && Settings::instance().enableSustain)
     {
         INPUT input = createInput(MapVirtualKey(VK_SPACE, MAPVK_VK_TO_VSC), true);
         SendInput(1, &input, sizeof(INPUT));
@@ -121,7 +121,7 @@ const void PianoKey::pressSpace()
 
 const void PianoKey::releaseSpace()
 {
-    if (Settings::instance().enableOutput)
+    if (Settings::instance().enableOutput && Settings::instance().enableSustain)
     {
         INPUT input = createInput(MapVirtualKey(VK_SPACE, MAPVK_VK_TO_VSC), false);
         SendInput(1, &input, sizeof(INPUT));
@@ -138,7 +138,7 @@ const void PianoKey::setVelocity(int velocity)
     if (velocity == CURRENT_VELOCITY)
         return;
 
-    if (Settings::instance().enableVelocity)
+    if (Settings::instance().enableOutput && Settings::instance().enableVelocity)
     {
         unsigned short index = velocity / 4;
         IM_ASSERT(index < VELOCITIES.size());

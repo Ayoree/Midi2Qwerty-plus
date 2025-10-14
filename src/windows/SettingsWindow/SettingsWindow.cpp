@@ -15,7 +15,8 @@ void SettingsWindow::draw()
     ImGui::Begin("Settings", nullptr, WINDOW_FLAGS);
 
     ImGui::Checkbox("Enable QWERTY output", &Settings::instance().enableOutput);
-    ImGui::Checkbox("Enable velocity", &Settings::instance().enableVelocity); // TODO: implement this
+    ImGui::Checkbox("Enable velocity", &Settings::instance().enableVelocity);
+    ImGui::Checkbox("Enable sustain", &Settings::instance().enableSustain);
 
     if (ImGui::Button("MIDI input"))
         ImGui::OpenPopup("midi_input_popup");

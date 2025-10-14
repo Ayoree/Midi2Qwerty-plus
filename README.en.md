@@ -7,11 +7,12 @@ Supports 88 keys, velocity (key press strength), and playback of midi files.
 - [English](README.en.md)
 
 ## Settings Description
-1. `Enable QWERTY output`, if enabled, keyboard key presses will be emulated when playing notes.
-2. `Enable velocity`, if enabled, key presses corresponding to the velocity (strength of the piano key press) will be emulated.
-3. `MIDI input` - the device for reading piano key presses (usually this is the piano connected via cable).
-4. `MIDI output` - the device for playing back the pressed keys (optional).
-5. `Open MIDI file` - opens a file from the `songs` folder for playback.
+1. `Enable QWERTY output` - if enabled, keyboard key presses will be emulated when playing notes.
+2. `Enable velocity` - if enabled, key presses corresponding to the velocity (strength of the piano key press) will be emulated.
+3. `Enable sustain` - if enabled, space key will be pressed corresponding to signals.
+4. `MIDI input` - the device for reading piano key presses (usually this is the piano connected via cable).
+5. `MIDI output` - the device for playing back the pressed keys (optional).
+6. `Open MIDI file` - opens a file from the `songs` folder for playback.
 
 ## Usage
 1. For playing the piano in real time:
