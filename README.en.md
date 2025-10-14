@@ -1,10 +1,12 @@
 # Midi 2 Qwerty plus
 (MIDI input to Qwerty output) for a piano connected via cable. It emulates key presses on the keyboard.
 Supports 88 keys, velocity (key press strength), and playback of midi files.
-
+<br><br>
+The project is inspired by [miditoqwerty](https://github.com/ArijanJ/miditoqwerty). I decided to check if I could implement what already exists but with additional functionality and a more structured approach.
 ## Translations
 - [Русский](README.md)
 - [English](README.en.md)
+<img width="938" height="604" alt="Midi2Qwerty_plus_l0ANUpOYJG" src="https://github.com/user-attachments/assets/a3c64a0d-b83d-4f3c-b08f-a535c013a9c8" />
 
 ## Settings Description
 1. `Enable QWERTY output` - if enabled, keyboard key presses will be emulated when playing notes.
