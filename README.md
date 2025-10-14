@@ -1,10 +1,12 @@
 # Midi 2 Qwerty plus
 (MIDI input to Qwerty output) для пианино, подключённого через кабель. Эмулирует нажатия клавиш на клавиатуре.
 Поддержка 88 клавиш, силы нажатия (velocity) и проигрывание midi-файлов.
-
+<br><br>
+Проект вдохновлен [miditoqwerty](https://github.com/ArijanJ/miditoqwerty). Решил проверить смогу ли я реализовать то, что уже есть, но с дополнительным функционалом и более структурированным подходом.
 ## Translations
 - [Русский](README.md)
 - [English](README.en.md)
+<img width="938" height="604" alt="Midi2Qwerty_plus_l0ANUpOYJG" src="https://github.com/user-attachments/assets/a3c64a0d-b83d-4f3c-b08f-a535c013a9c8" />
 
 ## Описание Настроек
 1. `Enable QWERTY output` - если включено, то будут эмулироваться нажатия клавиш клавиатуры при проигрывании нот.
